@@ -101,6 +101,13 @@ L<Mojolicious::Command> and implements the following new ones.
 
 Run this command.
 
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2019, Roger Crew.
+
+This program is free software, you can redistribute it and/or
+modify it under the terms of the Artistic License version 2.0.
+
 =head1 SEE ALSO
 
 L<Mojolicious>, L<Mojolicious::Guides>, L<https://mojolicious.org>.
