@@ -14,19 +14,19 @@ sub run {
 
     # Class
     my $name  = pop @args // 'MyRole';
-    my $base  = pop @args;
-    my $class = $base && !$full ? "${base}::Role::${name}" : $name;
-    ( $base, $name ) = ( $1, $2 )
-      if ( !$base && $class =~ m/^(.*)::Role::(.*)/ );
-    my $sname = $base && $class =~ m/^${base}::Role::(.*)/ ? "+$1" : $class;
-    $base //= 'Mojo::Base';
+    my $consumer  = pop @args;
+    my $class = $consumer && !$full ? "${consumer}::Role::${name}" : $name;
+    ( $consumer, $name ) = ( $1, $2 )
+      if ( !$consumer && $class =~ m/^(.*)::Role::(.*)/ );
+    my $sname = $consumer && $class =~ m/^${consumer}::Role::(.*)/ ? "+$1" : $class;
+    $consumer //= 'Mojo::Base';
 
     my $dir  = join '-', split( '::', $class );
     my $app  = class_to_path $class;
     my $vars = {
         class      => $class,
-	use_base   => !exists $INC{class_to_path($base)},
-        base_class => $base,
+	use_consumer   => !exists $INC{class_to_path($consumer)},
+        consumer => $consumer,
         name       => $name,
         sname      => $sname,
         path       => $app
@@ -50,7 +50,7 @@ Mojolicious::Command::Author::generate::role - Role generator command
 
 =head1 SYNOPSIS
 
-  Usage: APPLICATION generate role [OPTIONS] [[BASECLASS] NAME]
+  Usage: APPLICATION generate role [OPTIONS] [[CONSUMER_CLASS] NAME]
 
     mojo generate role
     mojo generate role MyRole
@@ -59,7 +59,7 @@ Mojolicious::Command::Author::generate::role - Role generator command
     mojo generate role -f Mojo::Whatever MyRole
 
   Options:
-    -f, --full   Use NAME as the role name; do not add 'BASECLASS::Role::'
+    -f, --full   NAME is the full role name (omit 'CONSUMER_CLASS::Role::')
     -h, --help   Show this summary of available options
 
 =head1 DESCRIPTION
@@ -67,7 +67,7 @@ Mojolicious::Command::Author::generate::role - Role generator command
 L<Mojolicious::Command::Author::generate::role> generates directory structures
 for fully functional roles to use with L<Mojolicious> objects/classes.
 
-If the intended base class is not specified it will be inferred from the
+If the intended consumer class is not specified it will be inferred from the
 role name given (whatever precedes C<::Role::> in the name) or otherwise
 default to L<Mojo::Base>.
 
@@ -128,18 +128,18 @@ sub the_answer_to_everything {
 
 <% %>=head1 NAME
 
-<%= $class %> - Add important functionality to L<<%= $base_class %>> objects
+<%= $class %> - Add important functionality to L<<%= $consumer %>> objects
 
 <% %>=head1 SYNOPSIS
 
-  $new_class = <%= $base_class %>->with_roles('<%= $sname %>');
-  $object = <%= $base_class %>->new(...)->with_roles('<%= $sname %>');
+  $new_class = <%= $consumer %>->with_roles('<%= $sname %>');
+  $object = <%= $consumer %>->new(...)->with_roles('<%= $sname %>');
 
   $result = $object->the_answer_to_everything;
 
 <% %>=head1 DESCRIPTION
 
-L<<%= $class %>> is a role that adds some important functionality to L<<%= $base_class %>> objects.
+L<<%= $class %>> is a role that adds some important functionality to L<<%= $consumer %>> objects.
 
 <% %>=head1 METHODS
 
@@ -154,7 +154,7 @@ This method implements the important functionality
 
 <% %>=head1 SEE ALSO
 
-L<<%=$base_class%>>, L<Mojolicious>, L<Mojolicious::Guides>, L<https://mojolicious.org>.
+L<<%=$consumer%>>, L<Mojolicious>, L<Mojolicious::Guides>, L<https://mojolicious.org>.
 
 <% %>=cut
 
@@ -163,12 +163,12 @@ use Mojo::Base -strict;
 
 use Test::More;
 use Mojolicious::Lite;
-% if ($use_base) {
-use <%=$base_class%> ();
+% if ($use_consumer) {
+use <%=$consumer%> ();
 % }
 use Test::Mojo;
 
-my $class = <%=$base_class%>->with_roles('<%=$sname%>');
+my $class = <%=$consumer%>->with_roles('<%=$sname%>');
 ok(defined $class, "class->with_roles works");
 
 get '/' => sub {
