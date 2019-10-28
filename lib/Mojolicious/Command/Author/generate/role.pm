@@ -1,5 +1,7 @@
 package Mojolicious::Command::Author::generate::role;
 
+# ABSTRACT: Role generator command
+
 use Mojo::Base 'Mojolicious::Command';
 
 use Mojo::Util qw(camelize class_to_path getopt);
@@ -43,10 +45,6 @@ sub run {
 1;
 
 =encoding utf8
-
-=head1 NAME
-
-Mojolicious::Command::Author::generate::role - Role generator command
 
 =head1 SYNOPSIS
 
@@ -100,13 +98,6 @@ L<Mojolicious::Command> and implements the following new ones.
   $role_cmd->run(@ARGV);
 
 Run this command.
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2019, Roger Crew.
-
-This program is free software, you can redistribute it and/or
-modify it under the terms of the Artistic License version 2.0.
 
 =head1 SEE ALSO
 
