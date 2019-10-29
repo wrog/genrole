@@ -10,36 +10,37 @@ has description => 'Generate Mojolicious role directory structure';
 has usage       => sub { shift->extract_usage };
 
 sub run {
-    my ( $self, @args ) = @_;
+    my ($self, @args) = @_;
 
-    getopt \@args, 'f|full' => \( my $full );
+    getopt \@args, 'f|full' => \(my $full);
 
     # Class
-    my $name  = pop @args // 'MyRole';
-    my $consumer  = pop @args;
-    my $class = $consumer && !$full ? "${consumer}::Role::${name}" : $name;
-    ( $consumer, $name ) = ( $1, $2 )
-      if ( !$consumer && $class =~ m/^(.*)::Role::(.*)/ );
-    my $sname = $consumer && $class =~ m/^${consumer}::Role::(.*)/ ? "+$1" : $class;
+    my $name     = pop @args // 'MyRole';
+    my $consumer = pop @args;
+    my $class    = $consumer && !$full ? "${consumer}::Role::${name}" : $name;
+    ($consumer, $name) = ($1, $2)
+      if (!$consumer && $class =~ m/^(.*)::Role::(.*)/);
+    my $sname
+      = $consumer && $class =~ m/^${consumer}::Role::(.*)/ ? "+$1" : $class;
     $consumer //= 'Mojo::Base';
 
-    my $dir  = join '-', split( '::', $class );
+    my $dir  = join '-', split('::', $class);
     my $app  = class_to_path $class;
     my $vars = {
-        class      => $class,
-	use_consumer   => !exists $INC{class_to_path($consumer)},
-        consumer => $consumer,
-        name       => $name,
-        sname      => $sname,
-        path       => $app
+	class        => $class,
+	use_consumer => !exists $INC{class_to_path($consumer)},
+	consumer     => $consumer,
+	name         => $name,
+	sname        => $sname,
+	path         => $app
     };
-    $self->render_to_rel_file( 'class', "$dir/lib/$app", $vars );
+    $self->render_to_rel_file('class', "$dir/lib/$app", $vars);
 
     # Test
-    $self->render_to_rel_file( 'test', "$dir/t/basic.t", $vars );
+    $self->render_to_rel_file('test', "$dir/t/basic.t", $vars);
 
     # Makefile
-    $self->render_to_rel_file( 'makefile', "$dir/Makefile.PL", $vars );
+    $self->render_to_rel_file('makefile', "$dir/Makefile.PL", $vars);
 }
 
 1;
